@@ -40,18 +40,18 @@ jobs:
         run: |
           ./bin/scancentral package -bt mvn -o fortify_package.zip
 
-          UPLOAD_OUTPUT=$(java -jar FodUpload.jar \
-            -z fortify_package.zip \
-            -ep SingleScanOnly \
-            -portalurl https://ams.fortify.com/ \
-            -apiurl https://api.ams.fortify.com/ \
-            -userCredentials ${{ secrets.FORTIFY_USER }} ${{ secrets.FORTIFY_TOKEN }} \
-            -tenantCode ${{ secrets.FORTIFY_TENANT }} \
-            -releaseId ${{ secrets.FORTIFY_RELEASE_ID }} \
-            -pp Queue)
-          SCAN_ID=$(echo "$UPLOAD_OUTPUT" | sed -n 's/Scan \([0-9]*\).*$/\1/p')
+          # UPLOAD_OUTPUT=$(java -jar FodUpload.jar \
+          #   -z fortify_package.zip \
+          #   -ep SingleScanOnly \
+          #   -portalurl https://ams.fortify.com/ \
+          #   -apiurl https://api.ams.fortify.com/ \
+          #   -userCredentials ${{ secrets.FORTIFY_USER }} ${{ secrets.FORTIFY_TOKEN }} \
+          #   -tenantCode ${{ secrets.FORTIFY_TENANT }} \
+          #   -releaseId ${{ secrets.FORTIFY_RELEASE_ID }} \
+          #   -pp Queue)
+          # SCAN_ID=$(echo "$UPLOAD_OUTPUT" | sed -n 's/Scan \([0-9]*\).*$/\1/p')
 
-          FORTIFY_USER=${{ secrets.FORTIFY_USER }} FORTIFY_TOKEN=${{ secrets.FORTIFY_TOKEN }} FORTIFY_TENANT=${{ secrets.FORTIFY_TENANT }} node .github/scripts/fortify-wait-fpr.js "$SCAN_ID"
+          # FORTIFY_USER=${{ secrets.FORTIFY_USER }} FORTIFY_TOKEN=${{ secrets.FORTIFY_TOKEN }} FORTIFY_TENANT=${{ secrets.FORTIFY_TENANT }} node .github/scripts/fortify-wait-fpr.js "$SCAN_ID"
       - name: Archive fpr
         if: always()
         uses: actions/upload-artifact@v3
