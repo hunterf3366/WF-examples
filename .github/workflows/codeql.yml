@@ -1,47 +1,53 @@
-on: [pull_request]
-permissions:
-      actions: write
-      checks: write
-      contents: write
+# Mobb/CodeQL Fixer on pull requests
+# This workflow defines the needed steps to run CodeQL on every pull request and pass the results to Mobb Fixer.
+# This example utilizes CodeQL with JavaScript. For other languages, change the CodeQL language settings below.
+#
+# Secrets in use:
+# MOBB_API_TOKEN - your mobb user credentials (autumatially set if you forked this repo via the Mobb app)
+# GITHUB_TOKEN - automatically set by GitHub
+
+name: "Mobb/CodeQL"
+
+on:
+  pull_request:
+    branches: ["*"]
+
+jobs:
+  scan-and-fix:
+    name: Scan with CodeQL and fix with Mobb
+    runs-on: 'ubuntu-latest'
+    timeout-minutes: 360
+    permissions:
       pull-requests: write
       statuses: write
 
-jobs:
-  test_codeql:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup Java on this machine
-        uses: actions/setup-java@v3
-        with:
-          distribution: "oracle"
-          java-version: "19"
-      - name: Setup Maven on this machine
-        uses: stCarolas/setup-maven@v4.5
-        with:
-          maven-version: 3.8.6
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ["java-kotlin"]
+        # CodeQL supports [ 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift' ]
+        codeql_output_filename: ["java.sarif"]
 
-      - name: Checkout repo to get code
+    steps:
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
-          languages: java
+          languages: ${{ matrix.language }}
 
-      - name: Run CodeQL autobuild
-        uses: github/codeql-action/autobuild@v2
-
-      - name: Run CodeQL SAST scan
+      - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v2
         with:
-          output: ../results
+          category: "/language:${{ matrix.language }}"
+          output: results
 
       - name: Run Mobb on the findings and get fixes
         if: always()
-        uses: mobb-dev/action@beta0.0.4
+        uses: mobb-dev/action/review@v1.1
         with:
-          report-file: ../results/java.sarif
+          report-file: results/${{ matrix.codeql_output_filename }}
           api-key: ${{ secrets.MOBB_API_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           scanner: codeql
-          mobb-project-name: Action
