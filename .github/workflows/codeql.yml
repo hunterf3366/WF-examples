@@ -38,13 +38,13 @@ jobs:
           distribution: 'adopt'
           java-version: '17'
   
-      - name: Build with Maven
-        run: mvn -B clean package
-
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
           languages: ${{ matrix.language }}
+          
+      - name: Build with Maven
+        run: mvn -B clean package
 
       - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v2
