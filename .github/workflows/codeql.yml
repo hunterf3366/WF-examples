@@ -26,7 +26,7 @@ jobs:
       matrix:
         language: ["java-kotlin"]
         # CodeQL supports [ 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift' ]
-        codeql_output_filename: ["javascript-typescript"]
+        codeql_output_filename: ["report.sarif"]
 
     steps:
       - name: Checkout repository
