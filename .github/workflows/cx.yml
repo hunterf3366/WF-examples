@@ -50,7 +50,8 @@ jobs:
         scanners: sast
         break_build: true
         params: '--namespace=${{ github.repository_owner }} --repo-name=${{ github.event.repository.name }} --branch=${{ github.ref }} --merge-id=${{ github.event.number }} --logging.level.com.checkmarx.*=DEBUG --cx-flow.filterSeverity --cx-flow.filterCategory --checkmarx.version=9.0'
-    - name: Check Environmnet
+    - name: Check Environment
+      if: always()
       run:
         env
         ls -l
