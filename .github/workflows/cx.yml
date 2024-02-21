@@ -42,7 +42,7 @@ jobs:
         JIRA_FIELDS_0_TYPE : static
       with:
         project: ${{ github.repository }}-PR
-        #team: 'Mobb'
+        #team: '/CxServer/Mobb'
         checkmarx_url: ${{ secrets.CHECKMARX_URL }}
         checkmarx_username: ${{ secrets.CHECKMARX_USERNAME }}
         checkmarx_password: ${{ secrets.CHECKMARX_PASSWORD }}
