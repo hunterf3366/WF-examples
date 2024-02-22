@@ -46,6 +46,18 @@ jobs:
         incremental: false
         preset: All
         params: '--namespace=${{ github.repository_owner }} --repo-name=${{ github.event.repository.name }} --branch=${{ github.ref }} --merge-id=${{ github.event.number }} --logging.level.com.checkmarx.*=DEBUG --cx-flow.filterSeverity --cx-flow.filterCategory --checkmarx.version=9.0'
+    # Upload SARIF report for CodeQL / Security Alerts PRocessing
+    - name: Upload SARIF file
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: cx.sarif
+    - name: Archive report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: sast-report
+        path: cx.sarif
+
     - name: Check Environment
       if: always()
       run:
