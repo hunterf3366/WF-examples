@@ -34,19 +34,21 @@ jobs:
     # Runs the Checkmarx Scan leveraging the latest version of CxFlow - REFER to Action README for list of inputs
     - name: Checkmarx CxFlow Action
       uses: checkmarx-ts/checkmarx-cxflow-github-action@v1.9
-      #environment variable used for cx-flow
-      env:
-        JIRA_FIELDS_0_JIRA_DEFAULT_VALUE : APPSEC-2371
-        JIRA_FIELDS_0_JIRA_FIELD_NAME : "Epic Link"
-        JIRA_FIELDS_0_JIRA_FIELD_TYPE : text
-        JIRA_FIELDS_0_TYPE : static
       with:
         project: ${{ github.repository }}-PR
-        team: "CxServer\Mobb"
+        team: /CxServer/Mobb
         checkmarx_url: ${{ secrets.CHECKMARX_URL }}
         checkmarx_username: ${{ secrets.CHECKMARX_USERNAME }}
         checkmarx_password: ${{ secrets.CHECKMARX_PASSWORD }}
         checkmarx_client_secret: ${{ secrets.CHECKMARX_CLIENT_SECRET }}
-        scanners: sca
+        scanners: sast
         break_build: true
-        params: '--namespace=${{ github.repository_owner }} --repo-name=${{ github.event.repository.name }} --branch=${{ github.ref }} --merge-id=${{ github.event.number }} --logging.level.com.checkmarx.*=DEBUG --cx-flow.filterSeverity --cx-flow.filterCategory'
+        incremental: false
+        preset: All
+        params: '--namespace=${{ github.repository_owner }} --repo-name=${{ github.event.repository.name }} --branch=${{ github.ref }} --merge-id=${{ github.event.number }} --logging.level.com.checkmarx.*=DEBUG --cx-flow.filterSeverity --cx-flow.filterCategory --checkmarx.version=9.0'
+    - name: Check Environment
+      if: always()
+      run:
+        env
+        ls -l
+      shell: bash -l {0}
