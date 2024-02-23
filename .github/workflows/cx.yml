@@ -50,7 +50,7 @@ jobs:
     # Upload SARIF report for CodeQL / Security Alerts PRocessing
     - name: Upload SARIF file
       if: always()
-      uses: github/codeql-action/upload-sarif@v2
+      uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: cx.sarif
     - name: Archive report
@@ -59,7 +59,12 @@ jobs:
       with:
         name: sast-report
         path: cx.sarif
-
+    - name: Archive report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: cx-log
+        path: cx-flow.log
     - name: Check Environment
       if: always()
       run:
