@@ -69,10 +69,10 @@ jobs:
         path: cx-flow.log
     - name: Archive report
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: cx-xml
-        path: report.xml
+        name: Zips
+        path: /*.zip
     - name: Check Environment
       if: always()
       run:
