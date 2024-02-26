@@ -44,7 +44,7 @@ jobs:
         scanners: sast
         break_build: true
         incremental: false
-        bug_tracker-impl: CxXML
+        bug_tracker: Json
         preset: All
         params: '--namespace=${{ github.repository_owner }} --repo-name=${{ github.event.repository.name }} --branch=${{ github.ref }} --merge-id=${{ github.event.number }} --logging.level.com.checkmarx.*=DEBUG --cx-flow.filterSeverity --cx-flow.filterCategory --checkmarx.version=9.0 --checkmarx.preserve-xml=true --cx-xml.file-name-format=report.xml --cx-xml.data-folder=./ --sca.preserve-xml=true --cx-flow.bug-tracker-impl=CxXml' 
         #  --checkmarx.preserve-xml=true --cx-xml.file-name-format=report.xml --cx-xml.data-folder=./   
