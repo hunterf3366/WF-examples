@@ -44,17 +44,11 @@ jobs:
         scanners: sast
         break_build: true
         incremental: false
-        bug_tracker: Custom
+        # bug_tracker: Custom
         bug_tracker-impl: CxXML
         preset: All
-        params: '--namespace=${{ github.repository_owner }} --repo-name=${{ github.event.repository.name }} --branch=${{ github.ref }} --merge-id=${{ github.event.number }} --logging.level.com.checkmarx.*=DEBUG --cx-flow.filterSeverity --cx-flow.filterCategory --checkmarx.version=9.0 --cx-flow.bug-tracker-impl=CxXml --checkmarx.preserve-xml=true --cx-xml.file-name-format=report.xml --cx-xml.data-folder=./ --sca.preserve-xml=true' 
+        params: '--namespace=${{ github.repository_owner }} --repo-name=${{ github.event.repository.name }} --branch=${{ github.ref }} --merge-id=${{ github.event.number }} --logging.level.com.checkmarx.*=DEBUG --cx-flow.filterSeverity --cx-flow.filterCategory --checkmarx.version=9.0 --checkmarx.preserve-xml=true --cx-xml.file-name-format=report.xml --cx-xml.data-folder=./ --sca.preserve-xml=true' 
         #  --checkmarx.preserve-xml=true --cx-xml.file-name-format=report.xml --cx-xml.data-folder=./   
-    # Upload SARIF report for CodeQL / Security Alerts PRocessing
-    - name: Upload SARIF file
-      if: always()
-      uses: github/codeql-action/upload-sarif@v3
-      with:
-        sarif_file: cx.sarif
     - name: Archive report
       if: always()
       uses: actions/upload-artifact@v3
