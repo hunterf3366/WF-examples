@@ -70,5 +70,5 @@ jobs:
       if: always()
       run:
         env
-        ls -l
+        ls -lah
       shell: bash -l {0}
