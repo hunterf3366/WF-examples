@@ -64,8 +64,8 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: Zips
-        path: /*.zip
+        name: tmp
+        path: /tmp/cxflow/
     - name: Check Environment
       if: always()
       run:
