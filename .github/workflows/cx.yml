@@ -68,7 +68,7 @@ jobs:
         path: /tmp/cxflow/
     - name: Check Environment
       if: always()
-      run:
+      run: |
         env
         cd /
         ls -lahR
