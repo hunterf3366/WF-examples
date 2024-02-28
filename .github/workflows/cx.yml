@@ -74,4 +74,6 @@ jobs:
         ls -lahR
         cd /
         ls -lah
+        cd /tmp
+        ls -lah
       shell: bash -l {0}
