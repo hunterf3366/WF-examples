@@ -70,6 +70,8 @@ jobs:
       if: always()
       run: |
         env
-        cd /
+        pwd
         ls -lahR
+        cd /
+        ls -lah
       shell: bash -l {0}
