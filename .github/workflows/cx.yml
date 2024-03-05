@@ -44,11 +44,36 @@ jobs:
         scanners: sast
         break_build: true
         incremental: false
+        bug_tracker: Json
         preset: All
-        params: '--namespace=${{ github.repository_owner }} --repo-name=${{ github.event.repository.name }} --branch=${{ github.ref }} --merge-id=${{ github.event.number }} --logging.level.com.checkmarx.*=DEBUG --cx-flow.filterSeverity --cx-flow.filterCategory --checkmarx.version=9.0'
+        params: '--namespace=${{ github.repository_owner }} --repo-name=${{ github.event.repository.name }} --branch=${{ github.ref }} --merge-id=${{ github.event.number }} --logging.level.com.checkmarx.*=DEBUG --cx-flow.filterSeverity --cx-flow.filterCategory --checkmarx.version=9.0 --checkmarx.preserve-xml=true --cx-xml.file-name-format=report.xml --cx-xml.data-folder=./ --sca.preserve-xml=true' 
+        #  --checkmarx.preserve-xml=true --cx-xml.file-name-format=report.xml --cx-xml.data-folder=./   
+    - name: Archive report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: sast-report
+        path: cx.sarif
+    - name: Archive report
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: cx-log
+        path: cx-flow.log
+    - name: Archive report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: tmp
+        path: /tmp/cxflow/
     - name: Check Environment
       if: always()
-      run:
+      run: |
         env
-        ls -l
+        pwd
+        ls -lahR
+        cd /
+        ls -lah
+        cd /tmp
+        ls -lah
       shell: bash -l {0}
