@@ -35,13 +35,17 @@ jobs:
       run: |
         ./runCxConsole.sh Scan -v \
           -ProjectName 'CxServer\Mobb\antonychiu2-WF-examples-PR' \
-          -CxServer $CHECKMARX_URL \
-          -cxuser $CHECKMARX_USERNAME \
-          -cxpassword $CHECKMARX_PASSWORD \
+          -CxServer ${{ secrets.CHECKMARX_URL }} \
+          -cxuser ${{ secrets.CHECKMARX_USERNAME }} \
+          -cxpassword ${{ secrets.CHECKMARX_PASSWORD }} \
           -LocationType folder \
           -LocationPath "./source-code" \
-          -ReportXML "./report.xml"    
+          -ReportXML "report.xml"    
       shell: bash -l {0}
+
+    - name: Check env
+      run: |
+        ls -lah
       
     - name: Archive report
       if: always()
