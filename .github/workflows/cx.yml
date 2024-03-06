@@ -40,6 +40,7 @@ jobs:
           -cxpassword ${{ secrets.CHECKMARX_PASSWORD }} \
           -LocationType folder \
           -LocationPath "./" \
+          -SASTHigh 1 \
           -ReportXML "report.xml"    
       shell: bash -l {0}
 
