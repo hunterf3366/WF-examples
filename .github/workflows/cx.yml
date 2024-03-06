@@ -23,8 +23,8 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-      with: 
-        path: source-code
+      #with: 
+        #path: source-code
     - name: Download Checkmarx CLI 
       run: |
         wget -O cxcli.zip https://download.checkmarx.com/9.5.0/Plugins/CxConsolePlugin-1.1.30.zip
@@ -39,7 +39,7 @@ jobs:
           -cxuser ${{ secrets.CHECKMARX_USERNAME }} \
           -cxpassword ${{ secrets.CHECKMARX_PASSWORD }} \
           -LocationType folder \
-          -LocationPath "./source-code" \
+          -LocationPath "./" \
           -ReportXML "report.xml"    
       shell: bash -l {0}
 
