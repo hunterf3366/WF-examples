@@ -9,7 +9,7 @@
 # MOBB_API_TOKEN - your mobb user credentials (autumatially set if you used the Mobb app to configure the integration)
 # GITHUB_TOKEN - automatically set by GitHub
 
-name: "Mobb/Checkmarx"
+name: "Mobb/Checkmarx CLI"
 
 on:
   pull_request:
@@ -23,15 +23,38 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
+      with: 
+        path: source-code
     - name: Download Checkmarx CLI 
       run: |
         wget -O cxcli.zip https://download.checkmarx.com/9.5.0/Plugins/CxConsolePlugin-1.1.30.zip
         unzip cxcli.zip
         ls -l
+        
+    - name: Run Checkmarx CLI Scan
+      run: |
+        ./runCxConsole.sh Scan -v \
+          -ProjectName 'CxServer\Mobb\antonychiu2-WF-examples-PR' \
+          -CxServer $CHECKMARX_URL \
+          -cxuser $CHECKMARX_USERNAME \
+          -cxpassword $CHECKMARX_PASSWORD \
+          -LocationType folder \
+          -LocationPath "./source-code" \
+          -ReportXML "./report.xml"    
       shell: bash -l {0}
+      
     - name: Archive report
       if: always()
       uses: actions/upload-artifact@v3
       with:
         name: sast-report
-        path: cx.sarif
+        path: report.xml
+        
+    - name: Run Mobb on the findings and get fixes
+      if: always()
+      uses: mobb-dev/action/review@v1.1
+      with:
+        report-file: "/report.xml"
+        api-key: ${{ secrets.MOBB_API_TOKEN }}
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        scanner: checkmarx
