@@ -19,7 +19,6 @@ on:
 jobs:
   scan-and-fix:
     name: Issue Comment
-    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body,'Checkmarx One – Scan Summary & Details') }} # This makes sure that the comment originates from a PR and not an issue comment
     runs-on: 'ubuntu-latest'
     timeout-minutes: 360
     permissions:
@@ -29,69 +28,3 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - id: env 
-        name: Set Up Environment
-        run: |
-
-          # This step extracts the Head SHA and stores it in the 'head-sha' variable                
-          OUT=$(curl -s ${{github.event.issue.pull_request.url }} | jq -r '.head.sha')
-          echo $OUT
-          echo "head-sha=$OUT" >> $GITHUB_OUTPUT
-      
-      # This is an optional steps, it outputs the status of the job in the PR by showing it's 'pending'
-      - uses: Sibz/github-status-action@v1
-        with:
-          authToken: ${{ secrets.GITHUB_TOKEN }}
-          context: "Mobb fix analysis"
-          state: "pending"
-          sha: ${{steps.env.outputs.head-sha}}
-      
-      # Extract the scan ID from the Checkmarx comment and use it to generate a Checkmarx json report
-      - name: Get Checkmarx Report
-        run: |
-          SCAN_ID=$(echo "$COMMENT" | sed -n 's/.*scans?id=\([^&]*\).*/\1/p')
-          wget https://github.com/Checkmarx/ast-cli/releases/download/2.0.54/ast-cli_2.0.54_linux_x64.tar.gz -O checkmarx.tar.gz
-          tar -xf checkmarx.tar.gz
-          ./cx configure set --prop-name cx_apikey --prop-value ${{ secrets.CX_API_TOKEN }}
-          ./cx configure set --prop-name cx_base_auth_uri --prop-value ${{ secrets.CX_BASE_AUTH_URI }}
-          ./cx configure set --prop-name cx_base_uri --prop-value ${{ secrets.CX_BASE_URI }}
-          ./cx configure set --prop-name cx_tenant --prop-value ${{ secrets.CX_TENANT }}
-          ./cx results show --output-name report --report-format json --scan-id $SCAN_ID
-        env:
-          COMMENT: ${{ github.event.comment.body }}
-      - id: run-npx-mobb-dev
-        name: Mobb - Generate Autofix
-        if: always()
-        run: |
-          REPO=$(git remote get-url origin)
-          REPO=${REPO%".git"}
-          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-          SCANNER=checkmarx
-          PR_NUMBER=${{ github.event.issue.number }}
-          GITHUB_HEAD_REF=$(curl -s ${{github.event.issue.pull_request.url }} | jq -r '.head.ref')
-          OUT=$(npx --yes mobbdev@latest review  -r $REPO --ref $GITHUB_HEAD_REF --ch $GITHUB_SHA --api-key ${{ secrets.MOBB_API_TOKEN }} -f report.json  --pr $PR_NUMBER --github-token ${{ secrets.GITHUB_TOKEN }} --scanner $SCANNER)
-          RETVAL=$?
-          if [ $RETVAL -ne 0 ]; then
-            exit $RETVAL
-          fi
-          OUT=$(echo $OUT | tr '\n' ' ')
-         
-          echo "fix-report-url=$OUT" >> $GITHUB_OUTPUT
-      # This is an optional step to displays status of the - that it's in 'complete' status
-      - uses: Sibz/github-status-action@v1
-        with:
-          authToken: ${{ secrets.GITHUB_TOKEN }}
-          context: "Mobb fix analysis"
-          state: "success"
-          sha: ${{steps.env.outputs.head-sha}}
-          
-      # This is an optional step to display the Mobb fix report link in the PR
-      - uses: Sibz/github-status-action@v1
-        with:
-          authToken: ${{ secrets.GITHUB_TOKEN }}
-          context: "Mobb fix report link"
-          state: "success"
-          target_url: ${{ steps.run-npx-mobb-dev.outputs.fix-report-url }}
-          sha: ${{steps.env.outputs.head-sha}}
-          
