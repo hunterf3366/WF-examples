@@ -9,7 +9,7 @@
 # MOBB_API_TOKEN - your mobb user credentials (autumatially set if you used the Mobb app to configure the integration)
 # GITHUB_TOKEN - automatically set by GitHub
 
-name: "Mobb/Checkmarx"
+name: "Mobb/Checkmarx test"
 
 on:
   issue_comment:
