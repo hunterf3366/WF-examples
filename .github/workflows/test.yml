@@ -12,8 +12,8 @@
 name: "Mobb/Checkmarx"
 
 on:
-  pull_request:
-    branches: ["*"]
+  issue_comment:
+    types: [created]
 
 
 jobs:
