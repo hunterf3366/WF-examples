@@ -12,10 +12,10 @@
 name: "Mobb/Checkmarx test name3"
 
 on:
-  issue_comment:
-    types: [created]
-  #pull_request:
-    #branches: ["*"]
+  #issue_comment:
+    #types: [created]
+  pull_request:
+    branches: ["*"]
 
 
 jobs:
