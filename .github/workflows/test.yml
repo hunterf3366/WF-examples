@@ -13,16 +13,13 @@ name: "Mobb/Checkmarx source branch test1"
 
 on:
   issue_comment:
-    types: [created, deleted]
+    types: [created]
 
 jobs:
   scan-and-fix:
     name: Issue Comment
     runs-on: 'ubuntu-latest'
-    timeout-minutes: 360
-    permissions:
-      pull-requests: write
-      statuses: write
+
 
     steps:
       - name: Checkout repository
