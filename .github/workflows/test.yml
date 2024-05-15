@@ -9,7 +9,7 @@
 # MOBB_API_TOKEN - your mobb user credentials (autumatially set if you used the Mobb app to configure the integration)
 # GITHUB_TOKEN - automatically set by GitHub
 
-name: "Mobb/Checkmarx2"
+name: "Mobb/Checkmarx"
 
 on:
   issue_comment:
@@ -33,6 +33,7 @@ jobs:
       - id: env 
         name: Set Up Environment
         run: |
+
           # This step extracts the Head SHA and stores it in the 'head-sha' variable                
           OUT=$(curl -s ${{github.event.issue.pull_request.url }} | jq -r '.head.sha')
           echo $OUT
@@ -93,3 +94,4 @@ jobs:
           state: "success"
           target_url: ${{ steps.run-npx-mobb-dev.outputs.fix-report-url }}
           sha: ${{steps.env.outputs.head-sha}}
+          
