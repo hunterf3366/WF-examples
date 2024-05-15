@@ -12,8 +12,8 @@
 name: "Mobb/Checkmarx source branch test1"
 
 on:
-  issue_comment
-
+  issue_comment:
+    types: [created, deleted]
 
 jobs:
   scan-and-fix:
